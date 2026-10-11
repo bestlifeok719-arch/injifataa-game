@@ -1,0 +1,12 @@
+{
+  "name": "injifataa-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Injifataa Game - all games in one app",
+  "dependencies": {
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/cli": "^6.1.0",
+    "@capacitor/core": "^6.1.0",
+    "@capacitor-community/admob": "^6.0.0"
+  }
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E2F2A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Injifataa Game</title>
+<style>
+:root{--bg:#0E2F2A;--bg2:#154039;--card:#1C5148;--gold:#F4B63D;--coral:#E8553D;--sand:#FFF4DC;--mute:#A9C9BF;box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--sand);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif}
+body{padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:640px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+header>div{min-width:0;flex:1 1 140px}
+.logo{width:48px;height:48px;flex:none}
+h1{margin:0;font-size:clamp(20px,6vw,26px);line-height:1.1;letter-spacing:.2px;color:var(--gold)}
+.sub{margin:2px 0 0;color:var(--mute);font-size:14px}
+.sp{display:none}
+.avatar{width:44px;height:44px;border-radius:50%;border:3px solid var(--gold);background:var(--bg2) center/cover no-repeat;display:grid;place-items:center;font-size:22px;cursor:pointer;padding:0;color:var(--sand)}
+.coin{background:var(--bg2);border-radius:999px;padding:8px 12px;font-weight:700;white-space:nowrap}
+.gear{width:40px;height:40px;border-radius:14px;border:0;background:var(--bg2);color:var(--sand);font-size:22px;cursor:pointer}
+h2{font-size:18px;margin:22px 0 10px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.chip{flex:none;border:0;border-radius:999px;padding:10px 16px;background:var(--bg2);color:var(--sand);font:inherit;font-size:15px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--gold);color:#2A1B00;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.game{position:relative;border:0;border-radius:20px;padding:16px 12px 14px;min-height:150px;text-align:start;color:var(--sand);font:inherit;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.game .ic{position:absolute;top:10px;inset-inline-end:12px;font-size:44px}
+.game b{font-size:18px;display:block}
+.game small{color:rgba(255,244,220,.8);font-size:13px}
+.tag{position:absolute;top:10px;inset-inline-start:10px;background:rgba(0,0,0,.35);border-radius:999px;padding:3px 10px;font-size:12px}
+.ad{margin-top:18px;border:2px dashed var(--mute);border-radius:14px;min-height:56px;display:grid;place-items:center;color:var(--mute);font-size:13px}
+.toast{position:fixed;inset-inline:16px;bottom:calc(20px + env(safe-area-inset-bottom,0));max-width:420px;margin:auto;background:var(--sand);color:#2A1B00;border-radius:14px;padding:12px 16px;text-align:center;font-weight:700;opacity:0;transform:translateY(12px);transition:.2s;pointer-events:none}
+.toast.on{opacity:1;transform:none}
+.veil{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:5}
+.veil.on{display:flex}
+.sheet{width:100%;max-width:640px;background:#16403A;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0));display:grid;gap:10px}
+.btn{border:0;border-radius:18px;padding:16px;background:#3A5A52;color:var(--sand);font:inherit;font-size:17px;font-weight:700;cursor:pointer;width:100%}
+.btn.ok{background:var(--gold);color:#2A1B00}
+.lang{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lang .btn{padding:14px 0;font-size:15px}
+.lang .btn[aria-pressed=true]{background:var(--gold);color:#2A1B00}
+.lbl{text-align:center;color:var(--mute);margin:4px 0 0}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="30" fill="#E8553D"/>
+      <circle cx="32" cy="32" r="24" fill="#0E2F2A"/>
+      <path d="M20 40h24l2-14-8 6-6-10-6 10-8-6z" fill="#F4B63D"/>
+      <rect x="20" y="43" width="24" height="5" rx="2" fill="#F4B63D"/>
+    </svg>
+    <div><h1>Injifataa Game</h1><p class="sub" data-t="tag"></p></div>
+    <span class="sp"></span>
+    <span class="coin" id="coins"></span>
+    <button class="gear" id="gift" aria-label="Daily gift">🎁</button>
+    <button class="avatar" id="av" aria-label="My photo">🙂</button>
+    <button class="gear" id="gear" aria-label="Settings">⚙️</button>
+  </header>
+
+  <h2 data-t="pick"></h2>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<div class="veil" id="veil">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <button class="btn" id="bPhoto"></button>
+    <button class="btn" id="bMusic"></button>
+    <button class="btn" id="bSound"></button>
+    <p class="lbl" data-t="lang"></p>
+    <div class="lang" id="langs"></div>
+    <button class="btn ok" id="bOk"></button>
+  </div>
+</div>
+<input type="file" id="fPhoto" accept="image/*" hidden>
+<input type="file" id="fMusic" accept="audio/*" hidden>
+
+<script src="core.js"></script>
+<script src="games1.js"></script>
+<script src="games2.js"></script>
+<script src="games3.js"></script>
+<script>
+"use strict";
+const T={
+ en:{tag:"Pick a game and win",pick:"Pick your game",all:"All",sports:"Sports",action:"Action",puzzle:"Puzzle",soon:"Coming soon",photo:"📷 My photo",music:"🎵 Choose my music",on:"🔊 Sound: ON",off:"🔇 Sound: OFF",lang:"Language",ok:"OK",
+  football:"Football",boxing:"Boxing",running:"Running",horse:"Horse racing",bloom:"Pour Bloom"},
+ om:{tag:"Taphaa filadhu, injifadhu",pick:"Taphaa kee filadhu",all:"Hunda",sports:"Ispoortii",action:"Sochii",puzzle:"Yaadaa",soon:"Dhihoodhaan",photo:"📷 Suuraa koo",music:"🎵 Muuziqaa koo filadhu",on:"🔊 Sagalee: Banaa",off:"🔇 Sagalee: Cufaa",lang:"Afaan",ok:"Tole",
+  football:"Kubbaa Miilaa",boxing:"Boksii",running:"Fiigicha",horse:"Fardaan Gulufuu",bloom:"Pour Bloom"},
+ am:{tag:"ጨዋታ ምረጥ፣ አሸንፍ",pick:"ጨዋታህን ምረጥ",all:"ሁሉም",sports:"ስፖርት",action:"እንቅስቃሴ",puzzle:"እንቆቅልሽ",soon:"በቅርቡ",photo:"📷 ፎቶዬ",music:"🎵 ሙዚቃዬን ምረጥ",on:"🔊 ድምጽ: በርቷል",off:"🔇 ድምጽ: ጠፍቷል",lang:"ቋንቋ",ok:"እሺ",
+  football:"እግር ኳስ",boxing:"ቦክስ",running:"ሩጫ",horse:"ፈረስ ግልቢያ",bloom:"Pour Bloom"},
+ ar:{tag:"اختر لعبة وانتصر",pick:"اختر لعبتك",all:"الكل",sports:"رياضة",action:"حركة",puzzle:"ألغاز",soon:"قريباً",photo:"📷 صورتي",music:"🎵 اختر موسيقاي",on:"🔊 الصوت: مفعّل",off:"🔇 الصوت: متوقف",lang:"اللغة",ok:"حسناً",
+  football:"كرة القدم",boxing:"الملاكمة",running:"الجري",horse:"سباق الخيل",bloom:"Pour Bloom"}
+};
+const LN={en:"EN",om:"OM",am:"AM",ar:"AR"};
+const GAMES=[
+ {id:"football",cat:"sports",ic:"⚽",c:"#2F8F5B"},
+ {id:"boxing",cat:"action",ic:"🥊",c:"#B8402F"},
+ {id:"running",cat:"action",ic:"🏃",c:"#C9831C"},
+ {id:"horse",cat:"sports",ic:"🐎",c:"#7A4F2A"},
+ {id:"bloom",cat:"puzzle",ic:"🌸",c:"#A04A8F"}
+];
+const $=id=>document.getElementById(id);
+const S={lang:"en",sound:true,cat:"all",photo:"",music:""};
+const store={
+ get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+ set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+};
+const audio=new Audio();audio.loop=true;
+
+function load(){
+ const l=store.get("ij_lang");if(l&&T[l])S.lang=l;
+ S.sound=store.get("ij_sound")!=="0";
+ S.photo=store.get("ij_photo")||"";
+}
+function t(k){return T[S.lang][k]||T.en[k]||k}
+function render(){
+ document.documentElement.lang=S.lang;
+ document.documentElement.dir=S.lang==="ar"?"rtl":"ltr";
+ document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));
+ const cats=["all","sports","action","puzzle"];
+ $("chips").innerHTML="";
+ cats.forEach(c=>{
+  const b=document.createElement("button");b.className="chip";b.textContent=t(c);
+  b.setAttribute("aria-pressed",String(S.cat===c));
+  b.onclick=()=>{S.cat=c;render()};$("chips").appendChild(b);
+ });
+ $("grid").innerHTML="";
+ GAMES.filter(g=>S.cat==="all"||g.cat===S.cat).forEach(g=>{
+  const b=document.createElement("button");b.className="game";b.style.background="linear-gradient(160deg,"+g.c+",#0E2F2A 140%)";
+  const tag=document.createElement("span");tag.className="tag";tag.textContent=t(g.cat);
+  const ic=document.createElement("span");ic.className="ic";ic.textContent=g.ic;
+  const n=document.createElement("b");n.textContent=t(g.id);
+  const s=document.createElement("small");s.textContent=t("soon");
+  b.append(tag,ic,n,s);b.onclick=()=>Game.has(g.id)?Game.open(g.id):toast(t(g.id)+": "+t("soon"));
+  $("grid").appendChild(b);
+ });
+ $("bPhoto").textContent=t("photo");$("bMusic").textContent=t("music");
+ $("bSound").textContent=S.sound?t("on"):t("off");$("bOk").textContent=t("ok");
+ $("langs").innerHTML="";
+ Object.keys(LN).forEach(k=>{
+  const b=document.createElement("button");b.className="btn";b.textContent=LN[k];
+  b.setAttribute("aria-pressed",String(S.lang===k));
+  b.onclick=()=>{S.lang=k;store.set("ij_lang",k);render()};$("langs").appendChild(b);
+ });
+ const av=$("av");
+ if(S.photo){av.style.backgroundImage="url("+S.photo+")";av.textContent=""}
+ else{av.style.backgroundImage="";av.textContent="🙂"}
+ audio.muted=!S.sound;Sfx.setMuted(!S.sound);Sfx.userMusic=!!S.music;
+}
+let tt;
+function toast(m){const e=$("toast");e.textContent=m;e.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("on"),1800)}
+function openSheet(o){$("veil").classList.toggle("on",o)}
+
+function readPhoto(file){
+ if(!file)return;
+ const r=new FileReader();
+ r.onload=()=>{
+  const img=new Image();
+  img.onload=()=>{
+   const z=160,c=document.createElement("canvas");c.width=c.height=z;
+   const m=Math.min(img.width,img.height),x=(img.width-m)/2,y=(img.height-m)/2;
+   c.getContext("2d").drawImage(img,x,y,m,m,0,0,z,z);
+   S.photo=c.toDataURL("image/jpeg",.8);store.set("ij_photo",S.photo);render();
+  };
+  img.src=r.result;
+ };
+ r.readAsDataURL(file);
+}
+function readMusic(file){
+ if(!file)return;
+ if(S.music)URL.revokeObjectURL(S.music);
+ S.music=URL.createObjectURL(file);audio.src=S.music;
+ if(S.sound)audio.play().catch(()=>{});
+}
+
+$("gear").onclick=()=>openSheet(true);
+$("av").onclick=()=>$("fPhoto").click();
+$("bOk").onclick=()=>openSheet(false);
+$("veil").onclick=e=>{if(e.target===$("veil"))openSheet(false)};
+$("bPhoto").onclick=()=>$("fPhoto").click();
+$("bMusic").onclick=()=>$("fMusic").click();
+$("bSound").onclick=()=>{S.sound=!S.sound;store.set("ij_sound",S.sound?"1":"0");render();if(S.sound&&audio.src)audio.play().catch(()=>{})};
+$("fPhoto").onchange=e=>readPhoto(e.target.files[0]);
+$("fMusic").onchange=e=>readMusic(e.target.files[0]);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")openSheet(false)});
+
+Rewards.onChange=n=>{$("coins").textContent="🪙 "+n};Rewards.onChange(Rewards.get());
+function offerBonus(){
+ const old=document.getElementById("bonus");if(old)old.remove();
+ const b=document.createElement("button");b.id="bonus";b.className="btn ok";b.textContent=IJ.t("bonus");
+ b.style.cssText="position:fixed;left:16px;right:16px;bottom:calc(76px + env(safe-area-inset-bottom,0px));max-width:420px;margin:auto;z-index:4";
+ let used=false;b.onclick=()=>{if(used)return;used=true;Ads.rewarded(ok=>{if(ok){Rewards.add(50);Sfx.coin();toast("🎁 +50 🪙")}b.remove()})};
+ document.body.appendChild(b);setTimeout(()=>b.remove(),8000);
+}
+$("gift").onclick=()=>{const n=Rewards.claimDaily();if(n){Sfx.coin();toast("🎁 +"+n+" 🪙");offerBonus()}else toast(IJ.t("wait"))};
+document.addEventListener("click",e=>{if(e.target.closest("button"))Sfx.tap()});
+Ads.init();
+if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register("sw.js").catch(()=>{});
+load();render();
+</script>
+</body>
+</html>

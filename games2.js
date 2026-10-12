@@ -223,7 +223,7 @@ function frame(now){if(!alive)return;
     else if(o.t==="star"){if(Math.abs(S.jy-25)<60){o.hit=1;S.star=5;SFX.star()}}
     else if(S.jy<o.h&&pw){o.hit=1;hurt()}});
    S.riv.forEach(r=>{
-    const eq=r.c+90*Math.sin(S.t*(.2+r.i*.06)+r.pe),vr=nom*Math.max(.75,Math.min(1.3,1+(eq-r.dz)/900))*r.f*(1+Math.min(.1,lv*.008))*(1-api.ease*.3);r.dz+=(vr-v)*dt;r.ph+=dt*vr*.05;
+    const mm=r.dz>420?Math.max(.8,1-(r.dz-420)/1200):r.dz<-120?Math.min(1.18,1+(-120-r.dz)/800):1+.05*Math.sin(S.t*(.2+r.i*.06)+r.pe),vr=nom*mm*r.f*(1+Math.min(.1,lv*.008))*(1-api.ease*.3);r.dz+=(vr-v)*dt;r.ph+=dt*vr*.05;
     r.tt-=dt;if(r.tt<=0){r.tt=1.5+Math.random()*2;const want=Math.random()<.3?S.lane:Math.floor(Math.random()*NL),ok=S.riv.every(o=>o===r||Math.abs(o.tl-want)>=1||Math.abs(o.dz-r.dz)>140);if(ok)r.tl=want}
     S.obs.forEach(o=>{const g=o.dz-r.dz,a=Math.round(o.lane);if(!["pad","mud","heart","star"].includes(o.t)&&g>10&&g<170&&Math.round(r.l)>=a&&Math.round(r.l)<a+(o.span||1)&&r.jy<=0){if(o.h<=46&&Math.random()<.5){r.vy=620;r.jy=.01}else{for(let d=1;d<NL;d++){const c=[Math.round(r.l)-d,Math.round(r.l)+d].find(l=>l>=0&&l<NL&&!blocked(o.dz,l));if(c!==undefined){r.tl=c;r.tt=1;break}}}}});
     if(r.jy>0){r.vy-=G*dt;r.jy+=r.vy*dt;if(r.jy<=0){r.jy=0;r.vy=0}}
